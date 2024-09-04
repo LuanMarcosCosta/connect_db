@@ -1,0 +1,16 @@
+{
+  "scripts": {
+    "cypress:open": "cypress open",
+    "cypress": "npx cypress run"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "cypress": "^13.4.0",
+    "@types/node": "*",
+    "cypress-file-upload": "^5.0.8",
+    "dayjs": "^1.11.5",
+    "oracledb": "^6.6.0"
+  },
+  "typesPublisherContentHash": "11044158981d9216cd45fa4dc3bc2bfcaae950acabc4483391c914dd85e38f9c",
+  "typeScriptVersion": "4.7"
+}
