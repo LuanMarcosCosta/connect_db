@@ -1,15 +1,13 @@
 /// <reference types="cypress" />
 
-import { Helper } from '../page-objects/helper';
-import './commands'
-import 'cypress-file-upload'
-
-const helper = new Helper();
+import './commands';
+import './helper';
+import 'cypress-file-upload';
 
 beforeEach(() => {
-    cy.visit('/')
-    cy.wait(2000)
+    cy.limpaRelatorio()
 })
 afterEach(() => {
-    helper.capturaTela(Math.floor(Math.random() * 10000));
+    const screenshotName = Math.floor(Math.random() * 1000000);
+    cy.capturaTela(screenshotName);
 });

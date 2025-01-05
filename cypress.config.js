@@ -3,18 +3,31 @@ const { loadDBPlugin } = require('./cypress/plugin/conectaBanco');
 
 module.exports = defineConfig({
   video: false,
+  responseTimeout: 60000,
+  defaultCommandTimeout: 60000,
   watchForFileChanges: false,
   viewportWidth: 1920,
   viewportHeight: 1080,
-  responseTimeout: 20000,
-  defaultCommandTimeout: 20000,
-  caminhoCredenciais: '/var/credenciais/credenciais.json',
+  screenshotsFolder: '/report-e2e/report/cypress/nome-pasta-teste',
+  env: {
+    token: '',
+    caminhoCredenciais: '/credenciais/credenciais.json',
+  },
   e2e: {
-    chromeWebSecurity: false,
     setupNodeEvents(on) {
-      on('task', loadDBPlugin());
+      on('before:browser:launch', (browser, launchOptions) => {
+        if (browser.name === 'electron' && browser.isHeadless) {
+          launchOptions.preferences.width = 1920;
+          launchOptions.preferences.height = 1080;
+        }
+        return launchOptions;
+      });
+      // Aqui você apenas passa a função 'loadDBPlugin', sem chamá-la.
+      loadDBPlugin(on);
     },
     experimentalModifyObstructiveThirdPartyCode: true,
-    baseUrl: 'google.com.br',
+    baseUrl: 'https://sua-url-base.com.br/',
+    specPattern: 'tests/*.test.js',
+    experimentalRunAllSpecs: true
   },
 });
