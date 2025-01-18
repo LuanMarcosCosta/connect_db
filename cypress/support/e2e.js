@@ -5,6 +5,7 @@ import './helper';
 import 'cypress-file-upload';
 
 beforeEach(() => {
+    cy.visit('#/test');
     cy.limpaRelatorio()
 })
 afterEach(() => {

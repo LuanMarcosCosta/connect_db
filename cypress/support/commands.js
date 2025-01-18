@@ -1,9 +1,6 @@
-/// <reference types="cypress" />
-
 // ------------------- IMPORTS ------------------- //
 import dayjs from 'dayjs';
 import businessDays from 'dayjs-business-days';
-// ------------------- FIM IMPORTS ------------------- //
 
 // ------------------- COMANDOS PARA DATAS ------------------- //
 dayjs.extend(businessDays); // Extende dayjs com o plugin businessDays
@@ -20,24 +17,17 @@ export function api_getDiaUtilAnterior() {
   }
   return dataAnterior.format('YYYY-MM-DDT00:00:00');
 }
-// ------------------- FIM COMANDOS PARA DATAS ------------------- //
 
 // ------------------- SELECT - BD ------------------- //
 const query = `
-        SELECT  V.NOME_FAKE,
-                V.COD_ATT_FAKE,
-                V.STATUS_FAKE,
-                V.DATA_FAKE
-         FROM VIEW_ATENDIMENTO V
+        SELECT * FROM VIEW_ATENDIMENTO V
          WHERE V.STATUS_FAKE = 'P'
             AND V.DATA_FAKE IS NOT NULL
             ORDER BY V.DATA_FAKE DESC
         FETCH FIRST 1 ROW ONLY`;
-// ------------------- FRIM SELECT - BD ------------------- //
 
 // ------------------- COMANDOS FRONT-END  ------------------- //
-Cypress.Commands.add('pesquisaReembolso', () => {
-  cy.visit('#/test/processos/cadastrar');
+Cypress.Commands.add('pesquisaID', () => {
 
   // Executa a consulta no banco de dados e armazena o resultado em um alias chamado 'resultadoDoBanco'
   pegarDadosViaBanco(query, true, 'resultadoDoBanco');
@@ -47,22 +37,16 @@ Cypress.Commands.add('pesquisaReembolso', () => {
     expect(resultado).to.exist;
 
     // Insere o código da ordem de serviço no campo de input com nome "txtOs"
-    cy.get('input[name="txtOs"]')
+    cy.get('#seuid')
       .invoke('attr', 'type', 'password')
-      .type(`${resultado.COD_ATT_FAKE}`, { log: false });
-
-    cy.contains('Pesquisar')
-      .click();
-
-    cy.get('#primeiroDadoFake')
-      .click();
+      .type(`${resultado.COD_FAKE}`, { log: false });
   });
 })
 
 Cypress.Commands.add('funcaoDiaUtilAnterior', () => {
   const previousBusinessDay = getNextBusinessDay(-1);
 
-  cy.get('')
+  cy.get('#seuiddois')
     .invoke('attr', 'type', 'password')
     .type(previousBusinessDay, { delay: 0 });
 })
@@ -76,8 +60,6 @@ Cypress.Commands.add('funcaoproximoDiaUtil', () => {
     .clear() // Limpa o campo antes de inserir a nova data (necessário para conseguir digitar a data)
     .type(previousBusinessDay, { delay: 0 }); // Insere a próxima data útil instantaneamente (precisa ser assim)
 })
-
-// ------------------- FIM COMANDOS FRONT-END  ------------------- //
 
 // ACESAR O BANCO DE DADOS
 /**
@@ -103,4 +85,8 @@ export function pegarDadosViaBanco(query, umValorApenas = true, alias) {
     }
   });
 }
-//----------------------------------------------------------------------------------------------------------------------------
+
+//Limpeza de XHR e Fetch do relatório
+Cypress.Commands.add('limpaRelatorio', () => {
+  cy.intercept({ resourceType: /xhr|fetch/ }, { log: false });
+});
